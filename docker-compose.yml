@@ -1,0 +1,12 @@
+version: "3.3"
+
+services:
+  bot:
+    image: "macikolej/private:customized-telegram-news-bot"
+    restart: always
+    env_file:
+      - /home/ubuntu/shared/.env
+    ports:
+      - target: 3000
+        published: 3000
+

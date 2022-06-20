@@ -1,0 +1,26 @@
+name: Build image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in to DockerHub
+        run: echo $token | docker login --username macikolej --password-stdin
+        env:
+          token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build --file Dockerfile --tag macikolej/private:customized-telegram-news-bot .
+
+      - name: Push Docker image
+        run: docker push macikolej/private
+
+      - name: Log out of DockerHub
+        run: docker logout
