@@ -20,7 +20,7 @@ jobs:
         run: docker build --file Dockerfile --tag macikolej/private:customized-telegram-news-bot .
 
       - name: Push Docker image
-        run: docker push macikolej/private
+        run: docker push macikolej/private:customized-telegram-news-bot
 
       - name: Log out of DockerHub
         run: docker logout
