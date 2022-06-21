@@ -12,9 +12,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Log in to DockerHub
-        run: echo $token | docker login --username macikolej --password-stdin
+        run: echo $DOCKERHUB_TOKEN | docker login --username macikolej --password-stdin
         env:
-          token: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
         run: docker build --file Dockerfile --tag macikolej/private:customized-telegram-news-bot .
@@ -24,3 +24,31 @@ jobs:
 
       - name: Log out of DockerHub
         run: docker logout
+
+      - name: Pull & run the latest image on the server
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_KEY }}
+          envs: DOCKERHUB_TOKEN
+          script: |
+            # These exports are required to link envs from Github actions to envs on the server
+            export DOCKERHUB_TOKEN=$DOCKERHUB_TOKEN
+            # Clean up old images and containers to save space (the server quickly runs out of disk space)
+            docker image prune --all --force && docker container prune --force
+            # Log in to DockerHub
+            echo $DOCKERHUB_TOKEN | docker login --username macikolej --password-stdin
+            cd ~/customized-telegram-news-bot
+            # Turn off the server first, because docker-compose.yml may change
+            docker compose down
+            # Fetch the latest docker-compose.yml
+            git pull
+            # Pull the application images
+            docker compose pull
+            # Start the application containers
+            docker compose up --detach --no-build
+            # Log out of DockerHub
+            docker logout
