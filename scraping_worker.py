@@ -5,6 +5,7 @@ import MySQLdb
 import time
 import datetime
 import telegram
+from prawcore import NotFound
 
 dotenv.load_dotenv()
 
