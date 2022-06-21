@@ -11,11 +11,11 @@ dotenv.load_dotenv()
 BOT_API_KEY = os.getenv("BOT_API_KEY")
 bot = telegram.Bot(token=BOT_API_KEY)
 
-reddit = praw.Reddit(
-    client_id=os.getenv("REDDIT_API_ID"),
-    client_secret=os.getenv("REDDIT_API_KEY"),
-    user_agent="muj ulubiony bot",
-)
+# reddit = praw.Reddit(
+#     client_id=os.getenv("REDDIT_API_ID"),
+#     client_secret=os.getenv("REDDIT_API_KEY"),
+#     user_agent="muj ulubiony bot",
+# )
 
 # connection = MySQLdb.connect(
 #   host=os.getenv("DB_HOST"),
