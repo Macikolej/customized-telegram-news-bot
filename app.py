@@ -75,6 +75,7 @@ def respond():
         if len(text_list) > start_index + 2:
             subreddit = text_list[start_index + 1]
             upvote_threshold = text_list[start_index + 2]
+            print(type(upvote_threshold))
             if (type(upvote_threshold) == int and upvote_threshold > 0):
                 try:
                     reddit.subreddits.search_by_name(subreddit, exact=True)
