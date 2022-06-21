@@ -73,7 +73,7 @@ def respond():
 
     if "/start" in text:
         bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id)
-    if "/subscribe" in text:
+    # if "/subscribe" in text:
         # text_list = text.split()
         # start_index = text_list.index("/subscribe")
         # if len(text_list) > start_index + 2:
