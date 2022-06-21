@@ -40,6 +40,8 @@ subreddits = {}
 for subscription in subscriptions:
   _, chat_id, subreddit_name, date_of_subscription, upvotes_threshold = subscription
 
+  bot.sendMessage(chat_id=chat_id, text="communication test :)")
+
   subscriber_tuple = (chat_id, date_of_subscription, upvotes_threshold)
   if (not subreddit_name in subreddits):
     subreddits[subreddit_name] = [subscriber_tuple]

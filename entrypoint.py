@@ -7,7 +7,7 @@ if (MODE == "bot"):
 	popen = subprocess.Popen('gunicorn app:app -b :8000', shell=True)
 	popen.wait()
 elif (MODE == "workers"):
-	popen = subprocess.Popen('python3 scraping_worker.py', shell=True)
+	popen = subprocess.Popen('crontab crontab.txt', shell=True)
 	popen.wait()
 else:
 	popen = subprocess.Popen('echo "internal error - wrong environmental variable"', shell=True)
