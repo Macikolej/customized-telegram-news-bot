@@ -2,9 +2,7 @@ FROM python:3.10-alpine
 
 WORKDIR /app
 
-RUN apk add --update --no-cache dumb-init
-
-RUN apt install mysql
+RUN apk add --update --no-cache dumb-init mysql mysql-client
 
 COPY ./requirements.txt ./
 
