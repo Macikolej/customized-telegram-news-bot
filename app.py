@@ -93,7 +93,7 @@ def respond():
             else:
                 bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
         else:
-            bot.sendMessage(chat_id=chat_id, text="Your subscription was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
+            bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
 
     return "ok"
 
