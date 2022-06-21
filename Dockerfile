@@ -2,7 +2,7 @@ FROM python:3.10-alpine
 
 WORKDIR /app
 
-RUN apk add --update --no-cache dumb-init mysql mysql-client mariadb-connector-c-dev
+RUN apk add --update --no-cache dumb-init mariadb-connector-c-dev gcc musl-dev
 
 COPY ./requirements.txt ./
 
