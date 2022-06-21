@@ -9,4 +9,14 @@ services:
     ports:
       - target: 8000
         published: 8000
+    environment:
+      MODE: bot
+
+  workers:
+    image: "macikolej/private:customized-telegram-news-bot"
+    restart: always
+    env_file:
+      - /home/ubuntu/shared/.env
+    environment:
+      MODE: workers
 

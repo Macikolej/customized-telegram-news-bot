@@ -14,5 +14,5 @@ EXPOSE 8000
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-CMD ["gunicorn", "app:app", "-b", ":8000"]
+CMD ["/bin/sh", "entrypoint.sh"]
 
