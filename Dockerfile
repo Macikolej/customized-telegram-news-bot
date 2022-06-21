@@ -14,5 +14,5 @@ EXPOSE 8000
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
-CMD ["/bin/sh", "entrypoint.sh"]
+CMD ["python3", "entrypoint.py"]
 
