@@ -56,7 +56,10 @@ def delete_webhook():
 @app.route('/api/{}'.format(BOT_API_KEY), methods=['POST'])
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
-    print(update.message)
+
+    if (type(update.message) == NoneType):
+        return "ok"
+
     chat_id = update.message.chat.id
     global chat_id_g
     chat_id_g = update.message.chat.id
