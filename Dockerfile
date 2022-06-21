@@ -2,7 +2,7 @@ FROM python:3.10-alpine
 
 WORKDIR /app
 
-RUN apk add --update --no-cache dumb-init
+RUN apk add --update --no-cache dumb-init mysql
 
 COPY ./requirements.txt ./
 
