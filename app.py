@@ -57,7 +57,7 @@ def delete_webhook():
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
 
-    if (update.message is NoneType):
+    if (update.message is None):
         return "ok"
 
     chat_id = update.message.chat.id
