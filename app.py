@@ -74,26 +74,26 @@ def respond():
     if "/start" in text:
         bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id)
     if "/subscribe" in text:
-        text_list = text.split()
-        start_index = text_list.index("/subscribe")
-        if len(text_list) > start_index + 2:
-            subreddit = text_list[start_index + 1]
-            upvote_threshold = text_list[start_index + 2]
-            if (type(upvote_threshold) == int and upvote_threshold > 0):
-                try:
-                    reddit.subreddits.search_by_name(subreddit, exact=True)
-                    # c.execute(f"""
-                    #     INSERT INTO subscriptions
-                    #     (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                    #     VALUES ({1}, {chat_id}, {subreddit}, {datetime.datetime.now()}, {upvote_threshold})
-                    # """)
-                    bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
-                except NotFound:
-                    bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
-            else:
-                bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
-        else:
-            bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
+        # text_list = text.split()
+        # start_index = text_list.index("/subscribe")
+        # if len(text_list) > start_index + 2:
+        #     subreddit = text_list[start_index + 1]
+        #     upvote_threshold = text_list[start_index + 2]
+        #     if (type(upvote_threshold) == int and upvote_threshold > 0):
+        #         try:
+        #             reddit.subreddits.search_by_name(subreddit, exact=True)
+        #             # c.execute(f"""
+        #             #     INSERT INTO subscriptions
+        #             #     (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
+        #             #     VALUES ({1}, {chat_id}, {subreddit}, {datetime.datetime.now()}, {upvote_threshold})
+        #             # """)
+        #             bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
+        #         except NotFound:
+        #             bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
+        #     else:
+        #         bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
+        # else:
+        #     bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
 
     return "ok"
 
