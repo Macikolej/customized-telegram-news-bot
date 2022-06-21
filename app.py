@@ -30,9 +30,12 @@ connection = MySQLdb.connect(
   user=os.getenv("DB_USERNAME"),
   passwd=os.getenv("DB_PASSWORD"),
   db=os.getenv("DB_NAME"),
-  )
+  ssl_mode="VERIFY_IDENTITY",
+  ssl={
+    "ca": "/etc/ssl/cert.pem"
+  })
 
-c = connection.cursor()
+# c = connection.cursor()
 
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
