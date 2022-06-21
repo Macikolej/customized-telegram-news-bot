@@ -34,7 +34,7 @@ connection = MySQLdb.connect(
     "ca": "/etc/ssl/cert.pem"
   })
 
-# c = connection.cursor()
+c = connection.cursor()
 
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
@@ -81,11 +81,11 @@ def respond():
             if (upvote_threshold > 0):
                 try:
                     # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
-                    # c.execute(f"""
-                    #     INSERT INTO subscriptions
-                    #     (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                    #     VALUES ({1}, {chat_id}, {subreddit}, {datetime.datetime.now()}, {upvote_threshold})
-                    # """)
+                    c.execute(f"""
+                        INSERT INTO subscriptions
+                        (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
+                        VALUES ({1}, {chat_id}, {subreddit}, {datetime.datetime.now()}, {upvote_threshold})
+                    """)
                     bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
                 except NotFound:
                     bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
