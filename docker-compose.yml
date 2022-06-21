@@ -7,6 +7,6 @@ services:
     env_file:
       - /home/ubuntu/shared/.env
     ports:
-      - target: 3000
-        published: 3000
+      - target: 8000
+        published: 8000
 
