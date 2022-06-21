@@ -81,7 +81,7 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    reddit.subreddits.search_by_name(subreddit, exact=True)
+                    # reddit.subreddits.search_by_name(subreddit, exact=True)
                     # c.execute(f"""
                     #     INSERT INTO subscriptions
                     #     (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
