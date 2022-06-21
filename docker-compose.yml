@@ -10,7 +10,7 @@ services:
       - target: 8000
         published: 8000
     environment:
-      MODE: bot
+      MODE: "bot"
 
   workers:
     image: "macikolej/private:customized-telegram-news-bot"
@@ -18,5 +18,5 @@ services:
     env_file:
       - /home/ubuntu/shared/.env
     environment:
-      MODE: workers
+      MODE: "workers"
 
