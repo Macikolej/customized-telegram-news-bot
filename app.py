@@ -22,20 +22,18 @@ chat_id_g = 0
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_API_ID"),
     client_secret=os.getenv("REDDIT_API_KEY"),
-    user_agent="muj ulubiony bot",
+    user_agent="muj ulubiony bot2",
 )
 
-# connection = MySQLdb.connect(
-#   host=os.getenv("DB_HOST"),
-#   user=os.getenv("DB_USERNAME"),
-#   passwd=os.getenv("DB_PASSWORD"),
-#   db=os.getenv("DB_NAME"),
-#   ssl_mode="VERIFY_IDENTITY",
-#   ssl={
-#     "ca": "/etc/ssl/cert.pem"
-#   })
+connection = MySQLdb.connect(
+  host=os.getenv("DB_HOST"),
+  user=os.getenv("DB_USERNAME"),
+  passwd=os.getenv("DB_PASSWORD"),
+  db=os.getenv("DB_NAME"),
+  ssl_mode="VERIFY_IDENTITY",
+  )
 
-# c = connection.cursor()
+c = connection.cursor()
 
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
@@ -81,7 +79,7 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    reddit.subreddits.search_by_name("leagueoflegends", exact=True)
+                    # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                     # c.execute(f"""
                     #     INSERT INTO subscriptions
                     #     (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
