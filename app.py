@@ -2,6 +2,9 @@ from flask import Flask, request
 import telegram
 import dotenv
 import os
+import MySQLdb
+import praw
+from prawcore import NotFound
 
 dotenv.load_dotenv()
 
@@ -14,8 +17,27 @@ URL = os.getenv("URL")
 
 bot = telegram.Bot(token=BOT_API_KEY)
 app = Flask(__name__)
+chat_id_g = 0
 
-@app.route('/api/setwebhook', methods=['GET', 'POST'])
+reddit = praw.Reddit(
+    client_id=os.getenv("REDDIT_API_ID"),
+    client_secret=os.getenv("REDDIT_API_KEY"),
+    user_agent="muj ulubiony bot",
+)
+
+connection = MySQLdb.connect(
+  host=os.getenv("DB_HOST"),
+  user=os.getenv("DB_USERNAME"),
+  passwd=os.getenv("DB_PASSWORD"),
+  db=os.getenv("DB_NAME"),
+  ssl_mode="VERIFY_IDENTITY",
+  ssl={
+    "ca": "/etc/ssl/cert.pem"
+  })
+
+c = connection.cursor()
+
+@app.route('/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
     s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=BOT_API_KEY))
     if s:
@@ -23,16 +45,59 @@ def set_webhook():
     else:
         return "webhook setup failed"
 
-@app.route('/api/{}'.format(BOT_API_KEY), methods=['POST'])
+@app.route('/deletewebhook', methods=['GET', 'POST'])
+def delete_webhook():
+    s = bot.deleteWebhook()
+    if s:
+        return "webhook deleted"
+    else:
+        return "webhook not deleted"
+
+@app.route('/send', methods=["GET"])
+def a():
+    global chat_id_g
+    if chat_id_g != 0:
+        bot.sendMessage(chat_id=chat_id_g, text="mn")
+        return "sent"
+    return "not sent"
+
+@app.route('/{}'.format(BOT_API_KEY), methods=['POST'])
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     chat_id = update.message.chat.id
+    global chat_id_g
+    chat_id_g = update.message.chat.id
     msg_id = update.message.message_id
+    text = update.message.text.encode('utf-8').decode()
+    user_id = update.message.from_user.id
 
-    bot.sendMessage(chat_id=chat_id, text="bla", reply_to_message_id=msg_id)
+    if "/start" in text:
+        bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id)
+    if "/subscribe" in text:
+        text_list = text.split()
+        start_index = text_list.index("/subscribe")
+        if len(text_list) > start_index + 2:
+            subreddit = text_list[start_index + 1]
+            upvote_threshold = text_list[start_index + 2]
+            if (type(upvote_threshold) == int and upvote_threshold > 0):
+                try:
+                    reddit.subreddits.search_by_name(subreddit, exact=True)
+                    c.execute(f"""
+                        INSERT INTO subscriptions
+                        (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
+                        VALUES ({1}, {chat_id}, {subreddit}, {datetime.datetime.now()}, {upvote_threshold})
+                    """)
+                    bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
+                except NotFound:
+                    bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
+            else:
+                bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
+        else:
+            bot.sendMessage(chat_id=chat_id, text="Your subscription was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
+
     return "ok"
 
-@app.route('/api')
+@app.route('/')
 def index():
     return '.'
 
