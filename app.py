@@ -55,6 +55,7 @@ def delete_webhook():
 
 @app.route('/api/{}'.format(BOT_API_KEY), methods=['POST'])
 def respond():
+    return "ok"
     update = telegram.Update.de_json(request.get_json(force=True), bot)
 
     if (update.message is None):
