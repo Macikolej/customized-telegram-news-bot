@@ -15,7 +15,7 @@ URL = os.getenv("URL")
 bot = telegram.Bot(token=BOT_API_KEY)
 app = Flask(__name__)
 
-@app.route('/setwebhook', methods=['GET', 'POST'])
+@app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
     s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=BOT_API_KEY))
     if s:
@@ -23,7 +23,7 @@ def set_webhook():
     else:
         return "webhook setup failed"
 
-@app.route('/{}'.format(BOT_API_KEY), methods=['POST'])
+@app.route('/api/{}'.format(BOT_API_KEY), methods=['POST'])
 def respond():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     chat_id = update.message.chat.id
@@ -32,7 +32,7 @@ def respond():
     bot.sendMessage(chat_id=chat_id, text="bla", reply_to_message_id=msg_id)
     return "ok"
 
-@app.route('/')
+@app.route('/api')
 def index():
     return '.'
 
