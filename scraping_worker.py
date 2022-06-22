@@ -56,9 +56,9 @@ for subreddit_name in subreddits:
         for subreddit_post in subreddit_posts:
             chat_id, date_of_subscription, upvotes_threshold = subscriber_tuple
             creation_date = datetime.datetime.fromtimestamp(subreddit_post.created)
-            temp = date_of_subscription - datetime.timedelta(days = 15)
+            # temp = date_of_subscription - datetime.timedelta(days = 15)
 
-            if (subreddit_post.score >= upvotes_threshold and creation_date >= temp):
+            if (subreddit_post.score >= upvotes_threshold and creation_date >= date_of_subscription):
                 c.execute(f"""
                     SELECT * FROM sent WHERE chat_id="{chat_id}";
                 """)

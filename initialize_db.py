@@ -19,7 +19,7 @@ cursor = connection.cursor()
 cursor.execute(f"""
   DROP TABLE IF EXISTS subscriptions;
   CREATE TABLE subscriptions (
-  id varchar(255),
+  id int AUTO_INCREMENT PRIMARY KEY,
   chat_id varchar(255),
   subreddit_name varchar(255),
   date_of_subscription datetime,
