@@ -105,16 +105,16 @@ def respond():
         start_index = text_list.index("/unsubscribe")
         if len(text_list) > start_index + 1:
             subreddit = text_list[start_index + 1]
-                try:
-                    # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
-                    c.execute(f"""
-                        DELETE FROM subscriptions WHERE
-                        WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
-                    """)
-                    connection.commit()
-                    bot.sendMessage(chat_id=chat_id, text=f"Unsubscribed the {subreddit} subreddit!", reply_to_message_id=msg_id)
-                except NotFound:
-                    bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
+            try:
+                # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
+                c.execute(f"""
+                    DELETE FROM subscriptions WHERE
+                    WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
+                """)
+                connection.commit()
+                bot.sendMessage(chat_id=chat_id, text=f"Unsubscribed the {subreddit} subreddit!", reply_to_message_id=msg_id)
+            except NotFound:
+                bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
         else:
             bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing the subreddit name!", reply_to_message_id=msg_id)
 
