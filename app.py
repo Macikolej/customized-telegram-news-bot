@@ -65,7 +65,7 @@ def respond():
     user_id = update.message.from_user.id
 
     if "/start" in text:
-        print()
+        bot.sendMessage(chat_id=chat_id, text="Hello and welcome to your new news source! To subscribe to a subreddit type '/subscribe name_of_subreddit upvote_threshold'.")
         # bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("➡️ Configuration", web_app=telegram.WebAppInfo(url="https://macikolej.github.io/telegram-bot-configuration/"))]]))
         # bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_markup={"keyboard": [[{"text": "web app", "web_app": {"url": "https://macikolej.github.io/telegram-bot-configuration/"}}]]})
     if "/subscribe" in text:
