@@ -22,7 +22,7 @@ app = Flask(__name__)
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_API_ID"),
     client_secret=os.getenv("REDDIT_API_KEY"),
-    user_agent="muj ulubiony bot2",
+    user_agent="muj ulubiony bot",
 )
 
 connection = MySQLdb.connect(
@@ -81,6 +81,8 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
+                    print(os.getenv("REDDIT_API_ID"))
+                    print(os.getenv("REDDIT_API_KEY"))
                     reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                     #take to python
                     # c.execute(f"""
