@@ -2,102 +2,102 @@ from flask import Flask, request
 import telegram
 import dotenv
 import os
-import MySQLdb
-import praw
+import datetime
 from prawcore import NotFound
+import settings
 
-dotenv.load_dotenv()
+settings.init()
 
-global BOT_API_KEY
-global bot
-
-BOT_API_KEY = os.getenv("BOT_API_KEY")
-BOT_NAME = os.getenv("BOT_NAME")
-URL = os.getenv("URL")
-
-bot = telegram.Bot(token=BOT_API_KEY)
 app = Flask(__name__)
-chat_id_g = 0
 
-reddit = praw.Reddit(
-    client_id=os.getenv("REDDIT_API_ID"),
-    client_secret=os.getenv("REDDIT_API_KEY"),
-    user_agent="muj ulubiony bot",
-)
-
-# connection = MySQLdb.connect(
-#   host=os.getenv("DB_HOST"),
-#   user=os.getenv("DB_USERNAME"),
-#   passwd=os.getenv("DB_PASSWORD"),
-#   db=os.getenv("DB_NAME"),
-#   ssl_mode="VERIFY_IDENTITY",
-#   ssl={
-#     "ca": "/etc/ssl/cert.pem"
-#   })
-
-# c = connection.cursor()
-
-@app.route('/setwebhook', methods=['GET', 'POST'])
+@app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
-    s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=BOT_API_KEY))
-    if s:
+    response = settings.bot.setWebhook('{URL}{HOOK}'.format(URL=settings.URL, HOOK=settings.BOT_API_KEY))
+    if response:
         return "webhook setup ok"
     else:
         return "webhook setup failed"
 
-@app.route('/deletewebhook', methods=['GET', 'POST'])
+@app.route('/api/deletewebhook', methods=['GET', 'POST'])
 def delete_webhook():
-    s = bot.deleteWebhook()
-    if s:
+    response = bot.deleteWebhook()
+    if response:
         return "webhook deleted"
     else:
         return "webhook not deleted"
 
-@app.route('/send', methods=["GET"])
-def a():
-    global chat_id_g
-    if chat_id_g != 0:
-        bot.sendMessage(chat_id=chat_id_g, text="mn")
-        return "sent"
-    return "not sent"
-
-@app.route('/{}'.format(BOT_API_KEY), methods=['POST'])
+@app.route('/api/{}'.format(settings.BOT_API_KEY), methods=['POST'])
 def respond():
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
+    update = telegram.Update.de_json(request.get_json(force=True), settings.bot)
+
+    if (update.message is None):
+        return "ok"
+
     chat_id = update.message.chat.id
-    global chat_id_g
-    chat_id_g = update.message.chat.id
     msg_id = update.message.message_id
     text = update.message.text.encode('utf-8').decode()
     user_id = update.message.from_user.id
 
     if "/start" in text:
-        bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id)
+        settings.bot.sendMessage(chat_id=chat_id, text="Hello and welcome to your new news source! To subscribe to a subreddit type '/subscribe name_of_subreddit upvote_threshold'. To unsubscribe type '/unsubscribe name_of_subreddit upvote_threshold'.")
     if "/subscribe" in text:
         text_list = text.split()
         start_index = text_list.index("/subscribe")
         if len(text_list) > start_index + 2:
             subreddit = text_list[start_index + 1]
-            upvote_threshold = text_list[start_index + 2]
-            if (type(upvote_threshold) == int and upvote_threshold > 0):
+            try:
+                int(text_list[start_index + 2])
+            except ValueError:
+                settings.bot.sendMessage(chat_id=chat_id, text=f"Second argument (Upvote threshold needs to be an integer!)", reply_to_message_id=msg_id)
+                return "403"
+            upvote_threshold = int(text_list[start_index + 2])
+            if (upvote_threshold > 0):
                 try:
-                    reddit.subreddits.search_by_name(subreddit, exact=True)
-                    # c.execute(f"""
-                    #     INSERT INTO subscriptions
-                    #     (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                    #     VALUES ({1}, {chat_id}, {subreddit}, {datetime.datetime.now()}, {upvote_threshold})
-                    # """)
-                    bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
+                    if len(settings.reddit.subreddits.search_by_name(subreddit, exact=True)) == 0:
+                        settings.bot.sendMessage(chat_id=chat_id, text=f"There is no subreddit named {subreddit}!", reply_to_message_id=msg_id)
+                        return "404"
+                    settings.cursor.execute(f"""
+                        SELECT * FROM subscriptions
+                        WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
+                    """)
+                    subscriptions = settings.cursor.fetchall()
+                    if (len(subscriptions) == 0):
+                        settings.cursor.execute(f"""
+                            INSERT INTO subscriptions
+                            (chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
+                            VALUES ("{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {upvote_threshold})
+                        """)
+                        settings.connection.commit()
+                        settings.bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
+                    else:
+                        settings.bot.sendMessage(chat_id=chat_id, text=f"You are already subscribed to {subreddit}!", reply_to_message_id=msg_id)
                 except NotFound:
-                    bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
+                    settings.bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
             else:
-                bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
+                settings.bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
         else:
-            bot.sendMessage(chat_id=chat_id, text="Your subscription was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
+            settings.bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
+
+    if "/unsubscribe" in text:
+        text_list = text.split()
+        start_index = text_list.index("/unsubscribe")
+        if len(text_list) > start_index + 1:
+            subreddit = text_list[start_index + 1]
+            try:
+                settings.cursor.execute(f"""
+                    DELETE FROM subscriptions
+                    WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
+                """)
+                settings.connection.commit()
+                settings.bot.sendMessage(chat_id=chat_id, text=f"Unsubscribed the {subreddit} subreddit!", reply_to_message_id=msg_id)
+            except NotFound:
+                settings.bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
+        else:
+            settings.bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing the subreddit name!", reply_to_message_id=msg_id)
 
     return "ok"
 
-@app.route('/')
+@app.route('/api/')
 def index():
     return '.'
 
