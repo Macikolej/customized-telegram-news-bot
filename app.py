@@ -123,16 +123,6 @@ def respond():
 
     return "ok"
 
-@app.route("/api/subreddits/", methods=["GET"])
-def get_subreddits():
-    response = jsonify({ "subreddits": list(map(lambda x: x.display_name, list(reddit.subreddits.popular(limit=300)))) })
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response;
-
-@app.route("/api/subscribe", methods=["POST"])
-def subscribe():
-    print("nie zdonrze nie ma opcji")
-
 @app.route('/api/')
 def index():
     return '.'
