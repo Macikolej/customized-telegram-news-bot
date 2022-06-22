@@ -107,7 +107,7 @@ def respond():
         if len(text_list) > start_index + 1:
             subreddit = text_list[start_index + 1]
             try:
-                print(reddit.subreddits.search_by_name("leagueoflegends", exact=True))
+                print(len(reddit.subreddits.search_by_name("leagueoflegends", exact=True)), flush=True)
                 c.execute(f"""
                     DELETE FROM subscriptions
                     WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
