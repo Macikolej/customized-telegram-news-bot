@@ -86,9 +86,16 @@ def respond():
                         WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
                     """)
                     subscriptions = c.fetchall()
-                    print(len(subscriptions), flush=True)
-                    # connection.commit()
-                    bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
+                    if (len(subscriptions) == 0):
+                        c.execute(f"""
+                            INSERT INTO subscriptions
+                            (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
+                            VALUES ({1}, "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {upvote_threshold})
+                        """)
+                        connection.commit()
+                        bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
+                    else:
+                        bot.sendMessage(chat_id=chat_id, text=f"You are already subscribed to {subreddit}!", reply_to_message_id=msg_id)
                 except NotFound:
                     bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
             else:
