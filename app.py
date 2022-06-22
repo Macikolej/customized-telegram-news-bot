@@ -22,7 +22,7 @@ app = Flask(__name__)
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_API_ID"),
     client_secret=os.getenv("REDDIT_API_KEY"),
-    user_agent="DEBIAN:123:1.0 (by u/Macikolej)",
+    user_agent="ALPINE:123:1.0 (by u/Macikolej)",
 )
 
 connection = MySQLdb.connect(
@@ -66,8 +66,6 @@ def respond():
 
     if "/start" in text:
         bot.sendMessage(chat_id=chat_id, text="Hello and welcome to your new news source! To subscribe to a subreddit type '/subscribe name_of_subreddit upvote_threshold'. To unsubscribe type '/unsubscribe name_of_subreddit upvote_threshold'.")
-        # bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("➡️ Configuration", web_app=telegram.WebAppInfo(url="https://macikolej.github.io/telegram-bot-configuration/"))]]))
-        # bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_markup={"keyboard": [[{"text": "web app", "web_app": {"url": "https://macikolej.github.io/telegram-bot-configuration/"}}]]})
     if "/subscribe" in text:
         text_list = text.split()
         start_index = text_list.index("/subscribe")
@@ -109,7 +107,7 @@ def respond():
         if len(text_list) > start_index + 1:
             subreddit = text_list[start_index + 1]
             try:
-                # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
+                print(reddit.subreddits.search_by_name("leagueoflegends", exact=True))
                 c.execute(f"""
                     DELETE FROM subscriptions
                     WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
