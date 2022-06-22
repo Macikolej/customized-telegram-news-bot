@@ -1,1 +1,1 @@
-* * * * * root python3 scraping_worker.py
+* * * * * python3 scraping_worker.py
