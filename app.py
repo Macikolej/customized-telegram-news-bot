@@ -77,6 +77,7 @@ def respond():
                 int(text_list[start_index + 2])
             except ValueError:
                 bot.sendMessage(chat_id=chat_id, text=f"Second argument (Upvote threshold needs to be an integer!)", reply_to_message_id=msg_id)
+                return "ok"
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
