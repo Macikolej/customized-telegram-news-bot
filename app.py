@@ -79,7 +79,7 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    if len(reddit.subreddits.search_by_name("leagueoflegends", exact=True)) == 0:
+                    if len(reddit.subreddits.search_by_name(subreddit, exact=True)) == 0:
                         bot.sendMessage(chat_id=chat_id, text=f"There is no subreddit named {subreddit}!", reply_to_message_id=msg_id)
                         return "404"
                     c.execute(f"""
