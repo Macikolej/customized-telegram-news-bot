@@ -61,7 +61,6 @@ for subreddit_name in subreddits:
           SELECT * FROM sent WHERE chat_id="{chat_id}";
         """)
         sent_posts = c.fetchall()
-        #todo: clear sent when they are older than month
         found = False
         for sent in sent_posts:
           sent_chat_id, sent_post_url, _ = sent
