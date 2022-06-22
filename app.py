@@ -22,7 +22,7 @@ app = Flask(__name__)
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_API_ID"),
     client_secret=os.getenv("REDDIT_API_KEY"),
-    user_agent="muj ulubiony bot",
+    user_agent="DEBIAN:123:1.0 (by u/Macikolej)",
 )
 
 connection = MySQLdb.connect(
