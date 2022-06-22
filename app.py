@@ -25,6 +25,8 @@ reddit = praw.Reddit(
     user_agent="muj ulubiony bot",
 )
 
+print("Initialized reddit")
+
 connection = MySQLdb.connect(
   host=os.getenv("DB_HOST"),
   user=os.getenv("DB_USERNAME"),
