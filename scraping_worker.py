@@ -21,6 +21,7 @@ reddit = praw.Reddit(
     user_agent="DEBIAN:123:1.0 (by u/Macikolej)",
 )
 
+
 connection = MySQLdb.connect(
     host=os.getenv("DB_HOST"),
     user=os.getenv("DB_USERNAME"),
