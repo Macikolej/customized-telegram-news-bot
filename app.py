@@ -108,7 +108,7 @@ def respond():
             try:
                 # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                 c.execute(f"""
-                    DELETE FROM subscriptions WHERE
+                    DELETE FROM subscriptions
                     WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
                 """)
                 connection.commit()
