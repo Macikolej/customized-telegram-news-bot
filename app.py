@@ -81,7 +81,7 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
+                    reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                     #take to python
                     # c.execute(f"""
                     #     IF NOT EXISTS (SELECT * FROM subscriptions)
