@@ -7,11 +7,14 @@ import datetime
 import telegram
 from prawcore import NotFound
 
+print("Starting scraping worker")
+
 dotenv.load_dotenv()
 
 BOT_API_KEY = os.getenv("BOT_API_KEY")
 bot = telegram.Bot(token=BOT_API_KEY)
 
+print(os.getenv("REDDIT_API_ID"), os.getenv("REDDIT_API_KEY")
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_API_ID"),
     client_secret=os.getenv("REDDIT_API_KEY"),
