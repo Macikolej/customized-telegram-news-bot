@@ -37,6 +37,9 @@ connection = MySQLdb.connect(
 
 c = connection.cursor()
 
+def configure():
+    return "bla"
+
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
     s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=BOT_API_KEY))
@@ -68,7 +71,7 @@ def respond():
     user_id = update.message.from_user.id
 
     if "/start" in text:
-        bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id)
+        bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id, reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("➡️ Configuration", callback_data="configure")]]))
     if "/subscribe" in text:
         text_list = text.split()
         start_index = text_list.index("/subscribe")
@@ -85,7 +88,7 @@ def respond():
                     c.execute(f"""
                         INSERT INTO subscriptions
                         (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                        VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {upvote_threshold})
+                        VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {commit_threshold})
                     """)
                     connection.commit()
                     bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)

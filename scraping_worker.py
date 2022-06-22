@@ -40,8 +40,6 @@ subreddits = {}
 for subscription in subscriptions:
   _, chat_id, subreddit_name, date_of_subscription, upvotes_threshold = subscription
 
-  bot.sendMessage(chat_id=chat_id, text="communication test :)")
-
   subscriber_tuple = (chat_id, date_of_subscription, upvotes_threshold)
   if (not subreddit_name in subreddits):
     subreddits[subreddit_name] = [subscriber_tuple]
@@ -49,15 +47,16 @@ for subscription in subscriptions:
     subreddits[subreddit_name].append(subscriber_tuple)
 
 for subreddit_name in subreddits:
-  subreddit_posts = reddit.subreddit(subreddit_name).top(time_filter="month")
+  subreddit_posts = list(reddit.subreddit(subreddit_name).top(time_filter="month"))
   subscribers = subreddits[subreddit_name]
 
   for subscriber_tuple in subscribers:
     for subreddit_post in subreddit_posts:
       chat_id, date_of_subscription, upvotes_threshold = subscriber_tuple
+      creation_date = datetime.datetime.fromtimestamp(subreddit_post.created)
+      temp = date_of_subscription - datetime.timedelta(days = 15)
 
-      creation_date = datetime.date.fromtimestamp(subreddit_post.created)
-      if (subreddit_post.score >= upvotes_threshold and creation_date >= date_of_subscription):
+      if (subreddit_post.score >= upvotes_threshold and creation_date >= temp):
         c.execute(f"""
           SELECT * FROM sent WHERE chat_id="{chat_id}";
         """)
@@ -65,14 +64,14 @@ for subreddit_name in subreddits:
         #todo: clear sent when they are older than month
         found = False
         for sent in sent_posts:
-          sent_chat_id, sent_post_url = sent
+          sent_chat_id, sent_post_url, _ = sent
           if (sent_chat_id == chat_id and sent_post_url == subreddit_post.permalink):
             found = True
 
         if (not found):
-          bot.sendMessage(chat_id=chat_id, text=subreddit_post.permalink)
+          bot.sendMessage(chat_id=chat_id, text=f"reddit.com/{subreddit_post.permalink}")
           c.execute(f"""
-            INSERT INTO sent (chat_id, post_url) VALUES("{chat_id}", "{subreddit_post.permalink}");
+            INSERT INTO sent (chat_id, post_url, post_date) VALUES("{chat_id}", "{subreddit_post.permalink}", "{creation_date.strftime('%Y-%m-%d %H:%M:%S')}");
           """)
 
 connection.commit()
