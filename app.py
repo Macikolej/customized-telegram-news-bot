@@ -84,7 +84,7 @@ def respond():
                     # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                     c.execute(f"""
                         IF NOT EXISTS (SELECT * FROM subscriptions)
-                                WHERE chat_id={chat_id} AND subreddit_name={subreddit}
+                                WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
                         BEGIN
                             INSERT INTO subscriptions
                             (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
