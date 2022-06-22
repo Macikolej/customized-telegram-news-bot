@@ -79,7 +79,7 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    print(len(reddit.subreddits.search_by_name("leagueoflegends", exact=True), flush=True))
+                    print(reddit.subreddits.search_by_name("leagueoflegends", exact=True), flush=True)
                     c.execute(f"""
                         SELECT * FROM subscriptions
                         WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
