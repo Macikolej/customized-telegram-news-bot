@@ -37,9 +37,6 @@ connection = MySQLdb.connect(
 
 c = connection.cursor()
 
-def configure():
-    return "bla"
-
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
     s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=BOT_API_KEY))
@@ -71,7 +68,7 @@ def respond():
     user_id = update.message.from_user.id
 
     if "/start" in text:
-        bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id, reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("➡️ Configuration", callback_data="configure", web_app=telegram.WebAppInfo(url="https://macikolej.github.io/telegram-bot-configuration/"))]]))
+        bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_to_message_id=msg_id, reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("➡️ Configuration", web_app=telegram.WebAppInfo(url="https://macikolej.github.io/telegram-bot-configuration/"))]]))
     if "/subscribe" in text:
         text_list = text.split()
         start_index = text_list.index("/subscribe")
