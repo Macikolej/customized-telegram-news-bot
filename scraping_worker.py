@@ -1,10 +1,5 @@
-import praw
-import dotenv
-import os
-import MySQLdb
 import time
 import datetime
-import telegram
 from prawcore import NotFound
 import settings
 

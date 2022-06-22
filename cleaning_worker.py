@@ -1,6 +1,3 @@
-import dotenv
-import os
-import MySQLdb
 import datetime
 import settings
 

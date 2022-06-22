@@ -1,7 +1,5 @@
 from flask import Flask, request
 import telegram
-import dotenv
-import os
 import datetime
 from prawcore import NotFound
 import settings
