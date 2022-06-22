@@ -25,8 +25,6 @@ reddit = praw.Reddit(
     user_agent="muj ulubiony bot",
 )
 
-print("Initialized reddit", flush=True)
-
 connection = MySQLdb.connect(
   host=os.getenv("DB_HOST"),
   user=os.getenv("DB_USERNAME"),
@@ -83,19 +81,12 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    print(os.getenv("REDDIT_API_ID"), flush=True)
-                    print(os.getenv("REDDIT_API_KEY"), flush=True)
-                    reddit.subreddits.search_by_name("leagueoflegends", exact=True)
-                    #take to python
-                    # c.execute(f"""
-                    #     IF NOT EXISTS (SELECT * FROM subscriptions)
-                    #             WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
-                    #     BEGIN
-                    #         INSERT INTO subscriptions
-                    #         (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                    #         VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {upvote_threshold})
-                    #     END
-                    # """)
+                    c.execute(f"""
+                        SELECT * FROM subscriptions
+                        WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
+                    """)
+                    subscriptions = c.fetchall()
+                    print(len(subscriptions))
                     # connection.commit()
                     bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
                 except NotFound:
