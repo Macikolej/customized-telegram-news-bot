@@ -86,7 +86,7 @@ def respond():
                         WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
                     """)
                     subscriptions = c.fetchall()
-                    print(len(subscriptions))
+                    print(len(subscriptions), flush=True)
                     # connection.commit()
                     bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
                 except NotFound:
