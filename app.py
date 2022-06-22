@@ -75,11 +75,13 @@ def respond():
                 int(text_list[start_index + 2])
             except ValueError:
                 bot.sendMessage(chat_id=chat_id, text=f"Second argument (Upvote threshold needs to be an integer!)", reply_to_message_id=msg_id)
-                return "ok"
+                return "403"
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    print(reddit.subreddits.search_by_name("leagueoflegends", exact=True), flush=True)
+                    if len(reddit.subreddits.search_by_name("leagueoflegends", exact=True)) == 0:
+                        bot.sendMessage(chat_id=chat_id, text=f"There is no subreddit named {subreddit}!", reply_to_message_id=msg_id)
+                        return "404"
                     c.execute(f"""
                         SELECT * FROM subscriptions
                         WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
