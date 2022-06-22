@@ -39,7 +39,7 @@ c = connection.cursor()
 
 @app.route('/api/subreddits', methods=["GET"])
 def return_subreddits():
-    return reddit.subreddits
+    return tuple(list(reddit.subreddits.popular))
 
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
