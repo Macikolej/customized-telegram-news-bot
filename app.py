@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import telegram
 import dotenv
 import os
@@ -18,7 +18,6 @@ URL = os.getenv("URL")
 
 bot = telegram.Bot(token=BOT_API_KEY)
 app = Flask(__name__)
-chat_id_g = 0
 
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_API_ID"),
@@ -36,10 +35,6 @@ connection = MySQLdb.connect(
   })
 
 c = connection.cursor()
-
-@app.route('/api/subreddits', methods=["GET"])
-def return_subreddits():
-    return tuple(list(reddit.subreddits.popular()))
 
 @app.route('/api/setwebhook', methods=['GET', 'POST'])
 def set_webhook():
@@ -65,8 +60,6 @@ def respond():
         return "ok"
 
     chat_id = update.message.chat.id
-    global chat_id_g
-    chat_id_g = update.message.chat.id
     msg_id = update.message.message_id
     text = update.message.text.encode('utf-8').decode()
     user_id = update.message.from_user.id
@@ -103,6 +96,12 @@ def respond():
             bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
 
     return "ok"
+
+@app.route("/api/subreddits/", methods=["GET"])
+def get_subreddits():
+    response = jsonify({ "subreddits": list(map(lambda x: x.display_name, list(reddit.subreddits.popular(limit=300)))) })
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response;
 
 @app.route('/api/')
 def index():

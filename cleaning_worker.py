@@ -14,12 +14,13 @@ connection = MySQLdb.connect(
     "ca": "/etc/ssl/cert.pem"
   })
 
-c = connection.cursor()
+cursor = connection.cursor()
 
-# c.execute(f"""
-#   DELETE FROM sent WHERE
-#   STR_TO_DATE(post_date, '%Y-%m-%d %H:%M:%S') < {str(datetime.timedelta(days = 31))}
-# """)
+month_ago = datetime.datetime.strptime((datetime.datetime.now() - datetime.timedelta(days = 31)).strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+cursor.execute(f"""
+  DELETE FROM sent WHERE
+  post_date < "{month_ago}"
+""")
 
-# connection.commit()
+connection.commit()
 
