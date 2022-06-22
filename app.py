@@ -88,7 +88,7 @@ def respond():
                         BEGIN
                             INSERT INTO subscriptions
                             (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                            VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {commit_threshold})
+                            VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {upvote_threshold})
                         END
                     """)
                     connection.commit()
