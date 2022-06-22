@@ -82,6 +82,7 @@ def respond():
             if (upvote_threshold > 0):
                 try:
                     # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
+                    #take to python
                     # c.execute(f"""
                     #     IF NOT EXISTS (SELECT * FROM subscriptions)
                     #             WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
