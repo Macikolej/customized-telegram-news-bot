@@ -126,6 +126,10 @@ def get_subreddits():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response;
 
+@app.route("/api/subscribe", methods=["POST"])
+def subscribe():
+    print("nie zdonrze nie ma opcji")
+
 @app.route('/api/')
 def index():
     return '.'
