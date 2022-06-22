@@ -41,8 +41,6 @@ subscriptions = c.fetchall()
 
 subreddits = {}
 
-print(reddit.subreddits.search_by_name("leagueoflegends", exact=True))
-
 for subscription in subscriptions:
     _, chat_id, subreddit_name, date_of_subscription, upvotes_threshold = subscription
 
