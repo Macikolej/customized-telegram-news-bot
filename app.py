@@ -82,9 +82,13 @@ def respond():
                 try:
                     # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                     c.execute(f"""
-                        INSERT INTO subscriptions
-                        (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
-                        VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {commit_threshold})
+                        IF NOT EXISTS (SELECT * FROM subscriptions)
+                                WHERE chat_id={chat_id} AND subreddit_name={subreddit}
+                        BEGIN
+                            INSERT INTO subscriptions
+                            (id, chat_id, subreddit_name, date_of_subscription, upvotes_threshold)
+                            VALUES ("1", "{chat_id}", "{subreddit}", "{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", {commit_threshold})
+                        END
                     """)
                     connection.commit()
                     bot.sendMessage(chat_id=chat_id, text=f"Subscribed to {subreddit}!", reply_to_message_id=msg_id)
