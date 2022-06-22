@@ -65,7 +65,7 @@ def respond():
     user_id = update.message.from_user.id
 
     if "/start" in text:
-        bot.sendMessage(chat_id=chat_id, text="Hello and welcome to your new news source! To subscribe to a subreddit type '/subscribe name_of_subreddit upvote_threshold'.")
+        bot.sendMessage(chat_id=chat_id, text="Hello and welcome to your new news source! To subscribe to a subreddit type '/subscribe name_of_subreddit upvote_threshold'. To unsubscribe type '/unsubscribe name_of_subreddit upvote_threshold'.")
         # bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("➡️ Configuration", web_app=telegram.WebAppInfo(url="https://macikolej.github.io/telegram-bot-configuration/"))]]))
         # bot.sendMessage(chat_id=chat_id, text="ok, instructions", reply_markup={"keyboard": [[{"text": "web app", "web_app": {"url": "https://macikolej.github.io/telegram-bot-configuration/"}}]]})
     if "/subscribe" in text:
@@ -99,6 +99,24 @@ def respond():
                 bot.sendMessage(chat_id=chat_id, text=f"Upvotes threshold needs to be higher than 0!", reply_to_message_id=msg_id)
         else:
             bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing one of the two arguments: subreddit name or upvote threshold!", reply_to_message_id=msg_id)
+
+    if "/unsubscribe" in text:
+        text_list = text.split()
+        start_index = text_list.index("/unsubscribe")
+        if len(text_list) > start_index + 1:
+            subreddit = text_list[start_index + 1]
+                try:
+                    # reddit.subreddits.search_by_name("leagueoflegends", exact=True)
+                    c.execute(f"""
+                        DELETE FROM subscriptions WHERE
+                        WHERE chat_id="{chat_id}" AND subreddit_name="{subreddit}"
+                    """)
+                    connection.commit()
+                    bot.sendMessage(chat_id=chat_id, text=f"Unsubscribed the {subreddit} subreddit!", reply_to_message_id=msg_id)
+                except NotFound:
+                    bot.sendMessage(chat_id=chat_id, text=f"Subreddit {subreddit} wasn't found!", reply_to_message_id=msg_id)
+        else:
+            bot.sendMessage(chat_id=chat_id, text="Your subscription command was missing the subreddit name!", reply_to_message_id=msg_id)
 
     return "ok"
 
