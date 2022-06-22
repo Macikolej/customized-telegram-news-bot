@@ -25,7 +25,7 @@ reddit = praw.Reddit(
     user_agent="muj ulubiony bot",
 )
 
-print("Initialized reddit")
+print("Initialized reddit", flush=True)
 
 connection = MySQLdb.connect(
   host=os.getenv("DB_HOST"),
@@ -83,8 +83,8 @@ def respond():
             upvote_threshold = int(text_list[start_index + 2])
             if (upvote_threshold > 0):
                 try:
-                    print(os.getenv("REDDIT_API_ID"))
-                    print(os.getenv("REDDIT_API_KEY"))
+                    print(os.getenv("REDDIT_API_ID"), flush=True)
+                    print(os.getenv("REDDIT_API_KEY"), flush=True)
                     reddit.subreddits.search_by_name("leagueoflegends", exact=True)
                     #take to python
                     # c.execute(f"""
